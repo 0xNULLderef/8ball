@@ -122,13 +122,14 @@ Ball.prototype.collide = function(frameTime) {
                 this.velocity = this.velocity.sub(velocityChange);
                 this.position = this.position.sub(hitPositionNormalized);
             } else if(other instanceof Hole) {
-                console.log(this);
-                const hitPositionMagnitude = hitPosition.length();
-                const bell = 10 ** (- (((hitPositionMagnitude - 12) / 10) ** 2));
-                this.velocity = this.velocity.add(hitPosition.mul(bell * 0.4));
-                if(hitPositionMagnitude < other.r - 4) {
-                    this.element.classList.add('hide');
-                    this.disabled = true;
+                if(this !== balls[15]) {
+                    const hitPositionMagnitude = hitPosition.length();
+                    const bell = 10 ** (- (((hitPositionMagnitude - 12) / 10) ** 2));
+                    this.velocity = this.velocity.add(hitPosition.mul(bell * 0.4));
+                    if(hitPositionMagnitude < other.r - 4) {
+                        this.element.classList.add('hide');
+                        this.disabled = true;
+                    }
                 }
             }
         }
@@ -237,7 +238,7 @@ let lastTimeStamp = 0;
 const animate = timeStamp => {
     const frameTime = timeStamp - lastTimeStamp;
     lastTimeStamp = timeStamp;
-    balls.forEach(ball => ball.update(frameTime));
+    balls.forEach(ball => ball.update(frameTime / 3));
     
     if(stick.style.visibility != 'hidden') {
         let stickPos = balls[15].position.add(new V2(-4, 16));
