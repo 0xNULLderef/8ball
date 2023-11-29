@@ -31,10 +31,30 @@ V2.prototype.normalize = function() {
     return this.mul(1 / this.length());
 }
 
+const size = new V2(350, 700);
+
+const physics = [];
+
+function Hole(position) {
+    this.position = position;
+    this.r = 18;
+
+    const hole = document.createElement('div');
+    hole.classList.add('hole');
+
+    this.element = hole;
+    this.element.style.marginTop = `${this.position.y - this.r}px`;
+    this.element.style.marginLeft = `${this.position.x - this.r}px`;
+    this.element.style.setProperty('--size', `${2 * this.r}px`);
+
+    physics.push(this);
+}
+
 function Ball(position, number) {
     this.position = position;
     this.rotation = new V2(0, 0);
     this.r = 16;
+    this.disabled = false;
 
     this.arcToDeg = (Math.PI * (this.r ** 2)) / 360;
 
@@ -77,8 +97,7 @@ function Ball(position, number) {
 
     this.element = ball;
 
-    if(Ball.balls === undefined) Ball.balls = [];
-    Ball.balls.push(this);
+    physics.push(this);
 }
 
 Ball.prototype.move = function(frameTime) {
@@ -89,38 +108,58 @@ Ball.prototype.move = function(frameTime) {
 }
 
 Ball.prototype.collide = function(frameTime) {
-    Ball.balls.filter(other => other !== this).forEach((other, i) => {
-        const centerDistance = this.position.sub(other.position).length();
-        if(this.position.sub(other.position).length() < this.r + other.r) {
-            const hitPosition = other.position.sub(this.position);
-            const hitPositionNormalized = hitPosition.normalize();
-            const hitDot = this.velocity.normalize().dot(hitPositionNormalized);
+    physics.filter(other => other !== this).forEach(other => {
 
-            const hitVelocity = this.velocity.sub(other.velocity).length(); 
-            const velocityChange = hitPositionNormalized.mul(hitVelocity * hitDot);
-            other.velocity = other.velocity.add(velocityChange);
-            this.velocity = this.velocity.sub(velocityChange);
-            this.position = this.position.sub(hitPositionNormalized);
+        const hitPosition = other.position.sub(this.position);
+        if(hitPosition.length() < this.r + other.r) {
+            if(other instanceof Ball && !other.disabled) {
+                const hitPositionNormalized = hitPosition.normalize();
+                const hitDot = this.velocity.normalize().dot(hitPositionNormalized);
+                if(isNaN(hitDot)) return;
+                const hitVelocity = this.velocity.sub(other.velocity).length(); 
+                const velocityChange = hitPositionNormalized.mul(hitVelocity * hitDot);
+                other.velocity = other.velocity.add(velocityChange);
+                this.velocity = this.velocity.sub(velocityChange);
+                this.position = this.position.sub(hitPositionNormalized);
+            } else if(other instanceof Hole) {
+                console.log(this);
+                const hitPositionMagnitude = hitPosition.length();
+                const bell = 10 ** (- (((hitPositionMagnitude - 12) / 10) ** 2));
+                this.velocity = this.velocity.add(hitPosition.mul(bell * 0.4));
+                if(hitPositionMagnitude < other.r - 4) {
+                    this.element.classList.add('hide');
+                    this.disabled = true;
+                }
+            }
         }
     });
+    if(this.position.x - this.r <= 0 || this.position.x + this.r >= size.x) {
+        this.velocity.x = -this.velocity.x;
+    }
+
+    if(this.position.y - this.r <= 0 || this.position.y + this.r >= size.y) {
+        this.velocity.y = -this.velocity.y;
+    }
 }
 
 Ball.prototype.update = function(frameTime) {
-    if(frameTime) {
-        this.move(frameTime);
-        this.collide(frameTime);
+    if(!this.disabled) {
+        if(frameTime) {
+            this.move(frameTime);
+            this.collide(frameTime);
+        }
+    
+        this.element.style.marginTop = `${this.position.y - this.r}px`;
+        this.element.style.marginLeft = `${this.position.x - this.r}px`;
+        this.element.style.setProperty('--rotationX', `${-this.rotation.x}deg`);
+        this.element.style.setProperty('--rotationY', `${this.rotation.y}deg`);
     }
-
-    this.element.style.marginTop = `${this.position.y}px`;
-    this.element.style.marginLeft = `${this.position.x}px`;
-    this.element.style.setProperty('--rotationX', `${-this.rotation.x}deg`);
-    this.element.style.setProperty('--rotationY', `${this.rotation.y}deg`);
 }
 
 const right = new V2(32.5, 0);
 const angle = 60 / 180 * Math.PI;
 const down = new V2(Math.cos(angle) * 32.5, Math.sin(angle) * 32.5);
-const origin = new V2(window.innerWidth / 2 - 32 * 3, 50);
+const origin = new V2(size.x / 2 - 2 * 32, 50);
 
 const positions = [
     origin.add(down.mul(4)), // 1
@@ -143,21 +182,35 @@ const positions = [
 
 let balls = positions.map((position, index) => new Ball(position, index + 1));
 
+const holePositions = [
+    new V2(9, 9),
+    new V2(9, size.y / 2),
+    new V2(9, size.y - 9),
+    new V2(size.x - 9, 9),
+    new V2(size.x - 9, size.y / 2),
+    new V2(size.x - 9, size.y - 9),
+];
+
+const holes = holePositions.map(position => new Hole(position));
+
 // balls[15].velocity.y = -100;
 // balls[15].velocity.x = -10;
 
 const table = document.getElementById('table');
+table.style.setProperty('--width', `${size.x}px`);
+table.style.setProperty('--height', `${size.y}px`);
 balls.forEach(ball => table.append(ball.element));
+holes.forEach(hole => table.append(hole.element));
 
 const divClientRect = table.getBoundingClientRect();
-const divOffset = new V2(divClientRect.top, divClientRect.left);
+let divOffset = new V2(divClientRect.left, divClientRect.top);
 
 let relativePosition = new V2(0, -1);
 
 window.addEventListener('mousemove', event => {
     const clientPosition = new V2(event.clientX, event.clientY);
     const divPosition = clientPosition.sub(divOffset);
-    relativePosition = balls[15].position.add(new V2(16, 16)).sub(divPosition);
+    relativePosition = balls[15].position.sub(divPosition);
     stick.style.setProperty('--rotationZ', `${180 - Math.atan2(relativePosition.x, relativePosition.y) / Math.PI * 180}deg`)
 });
 
@@ -175,7 +228,6 @@ window.addEventListener('click', () => {
         balls[15].velocity = relativePosition.normalize().mul((pull ** 2) / 50 + 25);
         pull = 5;
         stick.style.visibility = 'hidden';
-        console.log(stick.style.visibility);
     }
 });
 
@@ -188,7 +240,7 @@ const animate = timeStamp => {
     balls.forEach(ball => ball.update(frameTime));
     
     if(stick.style.visibility != 'hidden') {
-        let stickPos = balls[15].position.add(new V2(12, 32));
+        let stickPos = balls[15].position.add(new V2(-4, 16));
         stick.style.marginLeft = `${stickPos.x}px`;
         stick.style.marginTop = `${stickPos.y}px`;
         stick.style.setProperty('--pull', `${pull}px`);

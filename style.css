@@ -1,3 +1,12 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
 .stack {
     display: grid;
     grid-template: 1fr / 1fr;
@@ -15,12 +24,20 @@ body {
     background-color: gray;
 }
 
+#table {
+    width: var(--width);
+    height: var(--height);
+    border: 1px solid black;
+    background-color: darkgreen;
+    overflow: hidden;
+}
+
 #stick {
     width: fit-content;
     height: fit-content;
     transform-origin: 4px -16px;
     transform: rotateZ(var(--rotationZ));
-    z-index: 2;
+    z-index: 3;
 }
 
 #stick-body {
@@ -79,17 +96,19 @@ body {
     --halfsize: calc(var(--size) / 2);
     width: var(--size);
     height: var(--size);
+    z-index: 2;
 
     border-radius: 50%;
     background-color: var(--color);
 
-    clip-path: circle(50%);
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
 }
 
 .ball > * {
     display: flex;
     justify-content: center;
     align-items: center;
+    clip-path: circle(50%);
 }
 
 .circle {
@@ -125,4 +144,16 @@ body {
 .circle-text {
     font-size: calc(var(--size) / 4);
     font-family: monospace;
+}
+
+.hole {
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    background-color: black;
+}
+
+.hide {
+    transition: linear 0.05s;
+    opacity: 0;
 }
