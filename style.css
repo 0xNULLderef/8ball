@@ -1,0 +1,56 @@
+#border {
+    background-color: #532;
+    border-radius: 30px;
+    display: flex;
+    width: fit-content;
+}
+
+#table {
+    margin: 10px;
+    background-color: green;
+    width: 320px;
+    aspect-ratio: 0.5;
+    border-radius: 20px;
+}
+
+#holes {
+    width: 320px;
+    aspect-ratio: 0.5;
+    display: grid;
+    grid-template-columns: repeat(2, 32px);
+    justify-content: space-between;
+}
+
+.hole {
+    width: 32px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background-color: black;
+}
+
+#ball {
+    width: 96px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    display: flex;
+    background-color: black;
+    align-items: center;
+    justify-content: center;
+}
+
+#circle {
+    width: 48px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-origin: 50% 50% 48px;
+    backface-visibility: hidden;
+}
+
+#text {
+    font-size: xx-large;
+    font-family: monospace;
+}
