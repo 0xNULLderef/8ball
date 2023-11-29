@@ -5,28 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        #square {
-            width: 64px;
-            aspect-ratio: 1;
-            /* background-color: black; */
-            background-image: url(./cursor.png);
-            background-size: 64px;
-            --alpha: 50deg;
-            --beta: 0deg;
-            /* transform: matrix3d(
-                calc(cos(var(--beta))), 0, calc(0 - sin(var(--beta))), 0,
-                0, 1, 0, 0,
-                calc(sin(var(--beta))), 0, calc(cos(var(--beta))), 0,
-                0, 0, 0, 1
-            ); */
-            transform: matrix3d(
-                calc(cos(var(--beta))), calc(0 - sin(var(--alpha)) * sin(var(--beta))), calc(0 - cos(var(--alpha)) * sin(var(--beta))), 0,
-                0, calc(cos(var(--alpha))), calc(0 - sin(var(--alpha))), 0,
-                calc(sin(var(--beta))), calc(sin(var(--alpha)) * cos(var(--beta))), calc(cos(var(--alpha)) * cos(var(--beta))), 0,
-                0, 0, 0, 1
-            );
-        }
-
         div {
             overflow: hidden;
             width: 500px;
@@ -50,19 +28,6 @@
     </style>
 </head>
 <body>
-    <!-- <div id="square"></div>
-    <script>
-        let rotation = 0;
-        const square = document.getElementById('square');
-        const animate = () => {
-            rotation += 5;
-            square.style.setProperty('--beta', `${rotation}deg`);
-            requestAnimationFrame(animate);
-        }
-
-        requestAnimationFrame(animate);
-    </script>
-    -->
     <div>
         <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc pretium condimentum viverra. Phasellus placerat efficitur enim, non suscipit lectus sagittis sagittis. Sed ligula ipsum, semper sit amet facilisis et, finibus nec nisl. Nullam nec eros sed libero facilisis aliquet quis sit amet velit. Curabitur dapibus diam diam, a porttitor leo aliquet eget. Morbi orci nibh, rutrum at ante vitae, dignissim rhoncus ligula. Praesent blandit urna enim, quis elementum elit congue et. Ut accumsan pulvinar nisl, nec accumsan neque viverra ut. Ut fringilla odio non ante elementum, et vehicula purus vehicula. Proin sit amet suscipit mauris, vel vehicula metus. Etiam vehicula pellentesque nibh sed sagittis. Suspendisse ex purus, semper et sagittis quis, feugiat eget nibh. Aenean et elit maximus, convallis elit non, scelerisque est. Vestibulum luctus scelerisque maximus. Vivamus rutrum risus eu neque consectetur sodales. Aliquam feugiat metus quam, sit amet laoreet lectus convallis fringilla.

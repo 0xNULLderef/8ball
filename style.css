@@ -11,53 +11,64 @@
     height: 100%;
 }
 
-#table {
-    width: 320px;
-    aspect-ratio: 0.5;
-    background-color: green;
-    --border: 20px;
-    /* border: var(--border) solid brown; */
-    box-shadow: 0 0 0 10px brown;
-    border-radius: 10px;
-    margin: 20px;
-}
-
-#holes {
-    display: grid;
-    grid-template: repeat(3, auto) / repeat(2, auto);
-    justify-content: space-between;
-    align-content: space-between;
-}
-
-/* #holes > * {
-    grid-column: auto / auto;
-    grid-row: auto / auto;
-} */
-
-/* #holes > *:nth-child(2n + 1) {
-    grid-column: 2 / 2;
-    grid-row: 1 / 2;
-} */
-
-.hole {
-    width: 32px;
-    /* margin: calc(var(--border) / 2); */
-    margin: -5px;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background-color: black;
-}
-
 body {
     background-color: gray;
+}
+
+#stick {
+    width: fit-content;
+    height: fit-content;
+    transform-origin: 4px -16px;
+    transform: rotateZ(var(--rotationZ));
+    z-index: 2;
+}
+
+#stick-body {
+    margin-top: var(--pull);
+    width: 8px;
+    height: 256px;
+    background-color: brown;
+}
+
+#stick-tip {
+    background-color: white;
+    height: 8px;
+}
+
+#ball-1, #ball-9 {
+    --color: yellow;
+}
+
+#ball-2, #ball-10 {
+    --color: blue;
+}
+
+#ball-3, #ball-11 {
+    --color: red;
+}
+
+#ball-4, #ball-12 {
+    --color: purple;
+}
+
+#ball-5, #ball-13 {
+    --color: orange;
+}
+
+#ball-6, #ball-14 {
+    --color: green;
+}
+
+#ball-7, #ball-15 {
+    --color: brown;
 }
 
 #ball-8 {
     --color: black;
 }
 
-#ball-13 {
-    --color: orange;
+#ball-16 {
+    --color: white;
 }
 
 .ball {
@@ -67,7 +78,7 @@ body {
 .ball {
     --halfsize: calc(var(--size) / 2);
     width: var(--size);
-    aspect-ratio: 1;
+    height: var(--size);
 
     border-radius: 50%;
     background-color: var(--color);
@@ -95,11 +106,11 @@ body {
 }
 
 .circle-top {
-    transform: rotateY(var(--rotationY)) rotateX(calc(var(--rotationX) - 90deg));
+    transform: rotateY(var(--rotationX)) rotateX(calc(var(--rotationY) - 90deg));
 }
 
 .circle-bottom {
-    transform: rotateY(var(--rotationY)) rotateX(calc(var(--rotationX) + 90deg));
+    transform: rotateY(var(--rotationX)) rotateX(calc(var(--rotationY) + 90deg));
 }
 
 .circle-front {
@@ -108,7 +119,7 @@ body {
     align-items: center;
     justify-content: center;
 
-    transform:  rotate3d(0, 1, 0, var(--rotationY)) rotate3d(1, 0, 0, var(--rotationX));
+    transform:  rotate3d(1, 0, 0, var(--rotationY)) rotate3d(0, 1, 0, var(--rotationX));
 }
 
 .circle-text {
